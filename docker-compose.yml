@@ -1,0 +1,11 @@
+services:
+  actions-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        RUNNER_TOKEN: ${RUNNER_TOKEN}
+        RUNNER_USER: ${RUNNER_USER}
+        RUNNER_NAME: ${RUNNER_NAME}
+    stop_signal: SIGKILL
+    restart: unless-stopped
