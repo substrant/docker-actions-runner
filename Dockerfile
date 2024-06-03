@@ -16,10 +16,9 @@ RUN mkdir /actions-runner
 WORKDIR /actions-runner
 
 # Download and extract the latest runner package
-RUN curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L \
-    https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
-RUN tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
-RUN rm ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+COPY ./install.sh /
+RUN chmod +x /install.sh && /install.sh
+RUN rm -f /install.sh
 
 # Set up and admin account for configuration
 RUN useradd -ms /bin/bash admin && adduser admin sudo
