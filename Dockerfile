@@ -1,4 +1,6 @@
-FROM debian:latest
+# Newer versions of Ubuntu just completely fail to work because of some dependency issues
+# Not going to bother trying to fix it either, given that 22.04 is still in support
+FROM ubuntu:22.04
 
 # Arguments for setting up the image
 ARG RUNNER_VERSION="latest"
