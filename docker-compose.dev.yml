@@ -1,6 +1,8 @@
 services:
   actions-runner:
-    image: ghcr.io/substrant/actions-runner:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     stop_signal: SIGKILL
     restart: unless-stopped
     environment:

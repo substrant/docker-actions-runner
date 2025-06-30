@@ -1,12 +1,7 @@
-# Use the Debian Linux base image
-# Alpine's musl libc does not play nice with GitHub Actions
 FROM debian:latest
 
 # Arguments for setting up the image
 ARG RUNNER_VERSION="latest"
-ARG RUNNER_TOKEN
-ARG RUNNER_USER
-ARG RUNNER_NAME
 
 # Update package repositories and install any necessary packages
 RUN apt-get update && apt-get install -y curl sudo
@@ -15,28 +10,30 @@ RUN apt-get update && apt-get install -y curl sudo
 RUN mkdir /actions-runner
 WORKDIR /actions-runner
 
+# Copy install script
+COPY ./scripts/install.sh /
+
 # Download and extract the latest runner package
-COPY ./install.sh /
 RUN chmod +x /install.sh && /install.sh
 RUN rm -f /install.sh
 
-# Set up and admin account for configuration
-RUN useradd -ms /bin/bash admin && adduser admin sudo
-RUN echo 'admin ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-RUN chown -R admin:admin /actions-runner
+# Set up and runner account for configuration
+RUN useradd -ms /bin/bash runner && usermod -aG sudo runner
+RUN echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+RUN chown -R runner:runner /actions-runner
 
-# Switch to admin user
-USER admin
+# Switch to runner user
+USER runner
 
-# Install missing dependencies and set up the runner
+# Install missing dependencies
 RUN sudo ./bin/installdependencies.sh
-RUN ./config.sh --unattended \
-    --url https://github.com/${RUNNER_USER} \
-    --token ${RUNNER_TOKEN} \
-    --replace --name ${RUNNER_NAME}
 
 # Clear apt cache
 RUN sudo rm -rf /var/lib/apt/lists/*
 
+# Copy init script
+COPY ./scripts/init.sh /actions-runner
+RUN sudo chmod +rx /actions-runner/init.sh
+
 # Command to run when the container starts
-CMD [ "./run.sh" ]
+CMD [ "./init.sh" ]

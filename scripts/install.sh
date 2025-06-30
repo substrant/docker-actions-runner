@@ -9,12 +9,12 @@ fi
 
 # Download the binariess from GitHub
 echo "Downloading GitHub Actions v${RUNNER_VERSION}..."
-curl -o actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz -L \
-    https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+curl -o "actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz" -L \
+    "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
 
 # Extract the runner
 echo "Extracting binaries..."
-tar xzf ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+tar xzf "./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
 
 # Clean up
-rm ./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz
+rm "./actions-runner-linux-x64-${RUNNER_VERSION}.tar.gz"
