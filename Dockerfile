@@ -5,8 +5,16 @@ FROM ubuntu:22.04
 # Arguments for setting up the image
 ARG RUNNER_VERSION="latest"
 
-# Update package repositories and install any necessary packages
-RUN apt-get update && apt-get install -y curl sudo
+# Install Docker and other necessary packages
+RUN install -m 0755 -d /etc/apt/keyrings && \
+    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc \
+    sudo chmod a+r /etc/apt/keyrings/docker.asc \
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+      $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt-get update &&
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
+    sudo apt-get install git ca-certificates curl unzip build-essential sudo
 
 # Create a folder for actions
 RUN mkdir /actions-runner
@@ -20,7 +28,7 @@ RUN chmod +x /install.sh && /install.sh
 RUN rm -f /install.sh
 
 # Set up and runner account for configuration
-RUN useradd -ms /bin/bash runner && usermod -aG sudo runner
+RUN useradd -ms /bin/bash runner && usermod -aG sudo runner && usermod -aG docker runner
 RUN echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 RUN chown -R runner:runner /actions-runner
 
