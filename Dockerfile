@@ -48,4 +48,4 @@ COPY ./scripts/init.sh /actions-runner
 RUN sed -i 's/\r$//' /actions-runner/init.sh && chmod +rx /actions-runner/init.sh
 
 # Command to run when the container starts
-CMD [ "./init.sh" ]
+CMD [ "/actions-runner/init.sh" ]
