@@ -26,7 +26,6 @@ WORKDIR /actions-runner
 COPY ./scripts/install.sh /
 
 # Download and extract the latest runner package
-# Ensure script line endings are normalized (strip CR) in the image then run
 RUN sed -i 's/\r$//' /install.sh && chmod +x /install.sh && bash /install.sh
 RUN rm -f /install.sh
 
@@ -46,7 +45,7 @@ RUN sudo rm -rf /var/lib/apt/lists/*
 
 # Copy init script
 COPY ./scripts/init.sh /actions-runner
-RUN sudo chmod +rx /actions-runner/init.sh
+RUN sed -i 's/\r$//' /actions-runner/init.sh && chmod +rx /actions-runner/init.sh
 
 # Command to run when the container starts
 CMD [ "./init.sh" ]
