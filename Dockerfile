@@ -5,7 +5,7 @@ FROM ubuntu:22.04
 # Arguments for setting up the image
 ARG RUNNER_VERSION="latest"
 
-# Update system, install necessary packages, 
+# Update system, install necessary packages,
 RUN apt-get update && \
     apt-get upgrade && \
     apt-get install -y git ca-certificates curl unzip sudo && \
@@ -26,7 +26,8 @@ WORKDIR /actions-runner
 COPY ./scripts/install.sh /
 
 # Download and extract the latest runner package
-RUN chmod +x /install.sh && /install.sh
+# Ensure script line endings are normalized (strip CR) in the image then run
+RUN sed -i 's/\r$//' /install.sh && chmod +x /install.sh && bash /install.sh
 RUN rm -f /install.sh
 
 # Set up and runner account for configuration
